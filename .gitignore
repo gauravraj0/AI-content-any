@@ -1,0 +1,31 @@
+# --- python / backend -------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# runtime state: JSON "database", generated image assets, dev signing secret
+# (everything the app writes lives under .data/ — set STUDIO_DATA_DIR to relocate)
+.data/
+
+# --- node / frontend --------------------------------------------------------
+node_modules/
+dist/
+build/
+.vite/
+web/.smoke/
+npm-debug.log*
+yarn.lock
+
+# --- env / editor / os ------------------------------------------------------
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

@@ -1,0 +1,35 @@
+{
+  "name": "ai-content-studio-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 5173",
+    "lint": "eslint .",
+    "test": "npm run lint && npm run test:routes && npm run test:flows && npm run test:flows2 && npm run test:a11y && npm run test:links",
+    "test:routes": "node scripts/smoke.mjs",
+    "test:flows": "node scripts/flow.mjs",
+    "test:flows2": "node scripts/flows2.mjs",
+    "test:a11y": "node scripts/a11y.mjs",
+    "test:links": "node scripts/links.mjs",
+    "size": "vite build && ls -lh dist/assets | tail -3"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^10.9.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.12.0",
+    "jsdom": "^30.0.1",
+    "vite": "^5.4.2"
+  }
+}

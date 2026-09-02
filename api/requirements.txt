@@ -1,0 +1,6 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+# Optional (production persistence layer -- see app/db.py):
+# sqlalchemy>=2.0
+# psycopg2-binary>=2.9          # PostgreSQL
+# firebase-admin>=6.5           # Firebase Auth
