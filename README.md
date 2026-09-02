@@ -171,6 +171,8 @@ npm run test:flows2   # registration, settings persistence, pin/batch export, do
                       # editor, template + prompt handoff, analytics toggles, 402 upgrade path
 npm run test:a11y     # accessible names, alt text, labels, heading order, landmarks, dup ids
 npm run test:links    # every internal link → a router route; every /api path → OpenAPI
+npm run test:dev      # dev bundle only: React warnings (keys, DOM nesting, controlled
+                      # inputs) plus a StrictMode probe of the one-shot composer handoff
 ```
 
 The harnesses bundle `src/main.jsx` with esbuild, mount it in jsdom and proxy `fetch` to
@@ -183,6 +185,12 @@ every endpoint listed above.
 Note: `eslint-plugin-react` and `eslint-plugin-jsx-a11y` are installed but pinned to the
 ESLint 8 API, so they are not enabled in `eslint.config.js`; the equivalent checks live in
 `scripts/a11y.mjs` instead.
+
+`npm test` runs the whole set. `test:dev` builds with `NODE_ENV=development` on purpose:
+that is the only mode where React reports invalid nesting and where StrictMode
+double-invokes renders, which is what catches side effects hiding in a render (the
+template handoff originally consumed `sessionStorage` from a `useState` initializer —
+correct in the production bundle, broken under StrictMode).
 
 ## Production checklist for this codebase
 

@@ -38,12 +38,12 @@ const SOURCE_KINDS = ["rewrite", "summarize", "analyze"];
  *   · Prompts “Run”    → sessionStorage nebula.prompt-run (filled body)  + target kind
  * Read once on mount and cleared, so a refresh never re-applies a stale brief.
  */
-function readHandoff(query) {
+function readHandoff(query, { consume = false } = {}) {
   const take = (key) => {
     try {
       const raw = window.sessionStorage.getItem(key);
       if (!raw) return null;
-      window.sessionStorage.removeItem(key);
+      if (consume) window.sessionStorage.removeItem(key);
       return JSON.parse(raw);
     } catch { return null; }
   };
@@ -59,6 +59,15 @@ function readHandoff(query) {
   return merged;
 }
 
+/** Handoffs are read without side effects (render must stay pure — StrictMode
+ *  double-invokes it in dev) and cleared once, after the first commit. */
+const clearHandoff = () => {
+  try {
+    window.sessionStorage.removeItem("nebula.template");
+    window.sessionStorage.removeItem("nebula.prompt-run");
+  } catch { /* private mode */ }
+};
+
 export default function Studio() {
   const { kind: routeKind } = useParams();
   const kind = KIND_ORDER.includes(routeKind) ? routeKind : "blog";
@@ -69,6 +78,7 @@ export default function Studio() {
 
   const [query] = useSearchParams();
   const [handoff] = useState(() => readHandoff(query));
+  useEffect(clearHandoff, []);
   const asList = (v) => (Array.isArray(v) ? v : typeof v === "string" && v ? v.split(",").map((s) => s.trim()).filter(Boolean) : null);
   const [prompt, setPrompt] = useState(String(handoff.prompt || ""));
   const [source, setSource] = useState(String(handoff.source || ""));
