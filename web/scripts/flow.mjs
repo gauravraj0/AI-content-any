@@ -211,7 +211,7 @@ for (const [route, needles] of [
   const confirmed = click(window, "Wipe and reseed");
   await new Promise((r) => setTimeout(r, 2600));
   const docs = await (await fetch(`${API}/api/documents?limit=100`, { headers: { Authorization: `Bearer ${token}` } })).json();
-  check("sandbox reset restores seed data", clicked && confirmed && docs.total === 14, `total=${docs.total} ${problems.slice(0, 1).join(" / ")}`);
+  check("sandbox reset restores seed data", clicked && confirmed && docs.total === 16, `total=${docs.total} ${problems.slice(0, 1).join(" / ")}`);
   window.close();
 }
 

@@ -208,7 +208,7 @@ export default function Settings() {
             <h3 style={{ fontSize: 16 }}>Sandbox data</h3>
             <p className="small muted">
               This preview runs on a local JSON store with a deterministic content engine — no external AI calls and no
-              keys. Wipe it to get the factory demo workspace back: 2 workspaces, 14 documents, 169 usage events.
+              keys. Wipe it to get the factory demo workspace back: 2 workspaces, 16 documents, 173 usage events.
             </p>
             <button className="btn btn-quiet btn-sm" onClick={() => setConfirmReset(true)}><Icon name="refresh" size={14} />Reset demo data</button>
           </section>

@@ -7,7 +7,7 @@ import { Logo } from "../components/SiteChrome";
 import { useTitle } from "../components/ui";
 
 const BENEFITS = [
-  ["14 documents, 45 days of usage data and a prompt library already in the workspace", "bolt"],
+  ["16 documents, 44 days of usage data and a prompt library already in the workspace", "bolt"],
   ["Every generation format unlocked: blog, social, email, image, rewrite, summarize, SEO, analyzer", "layers"],
   ["Exports, analytics, templates and billing all wired to the same API you would ship", "download"],
 ];

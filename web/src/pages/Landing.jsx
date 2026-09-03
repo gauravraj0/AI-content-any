@@ -614,7 +614,7 @@ export default function Landing() {
               <div className="col stack-14">
                 <h2 style={{ fontSize: "clamp(25px,2.9vw,37px)" }}>Start with a brief, leave with a published piece.</h2>
                 <p className="big muted" style={{ maxWidth: "48ch" }}>
-                  The demo workspace is seeded with 14 documents, a template library, prompt versions and 45 days
+                  The demo workspace is seeded with 16 documents, a template library, prompt versions and 44 days
                   of usage data so nothing looks empty.
                 </p>
                 <div className="row wrap-flex">

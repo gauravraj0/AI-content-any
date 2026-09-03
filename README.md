@@ -33,7 +33,7 @@ serve behind the same host as the API. The Vite dev server proxies `/api` and `/
 so the SPA only ever uses relative URLs — no CORS, no localhost hardcoding.
 
 **Demo login:** `demo@nebula.studio` / `demo1234`, or one click on *Continue with the demo
-workspace*. It signs you into a seeded workspace: 2 projects, 14 documents, 169 usage
+workspace*. It signs you into a seeded workspace: 2 projects, 16 documents, 173 usage
 events, Pro plan with a partially-used credit balance. `POST /api/demo/reset` (or
 Settings → Sandbox data → Reset demo data) restores that factory state at any time.
 

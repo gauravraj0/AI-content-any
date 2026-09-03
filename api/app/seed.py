@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import time
 
-from . import auth, engine, images
+from . import auth, engine, images, nlp
 from .db import DB, new_id, now
 
 DAY = 86400
@@ -113,11 +113,13 @@ DOC_SEEDS = [
     ("caption", "behind the scenes of our template library", {"platforms": ["instagram", "tiktok"], "tone": "witty"}, 21),
     ("seo", "content calendar template for agencies", {}, 26),
     ("text", "ad copy for our spring campaign", {"format": "ad", "tone": "urgent"}, 29),
+    ("image", "hero art for the one-click briefs launch", {"style": "aurora", "ratio": "16:9"}, 4),
+    ("image", "editorial cover about content repurposing", {"style": "editorial", "ratio": "4:5"}, 19),
 ]
 
 DOC_TITLES = {
     "blog": "Draft", "text": "Copy", "caption": "Social set", "rewrite": "Rewrite",
-    "summarize": "Summary", "seo": "SEO brief", "analyze": "Content report",
+    "summarize": "Summary", "seo": "SEO brief", "analyze": "Content report", "image": "Art",
 }
 
 
@@ -189,25 +191,37 @@ def seed(force: bool = False) -> dict:
         params = {"prompt": prompt, "salt": f"seed{i}", **extra}
         if kind in ("rewrite", "summarize", "analyze"):
             params["source"] = extra.get("source") or src_pool.get(kind) or prompt
-        out = engine.run(kind, params)
         created = ts - days_ago * DAY - (i * 3600)
         img = None
-        if kind in ("blog", "caption", "text") and i % 3 == 0:
-            img = images.generate(prompt, ["aurora", "editorial", "neon", "terracotta"][i % 4],
-                                  "16:9" if kind == "blog" else "1:1", title=None, seed=f"seedimg{i}")
+        if kind == "image":
+            # matches what POST /api/generate/image stores, so seeded and live
+            # art look identical in the library
+            img = images.generate(prompt, params.get("style") or "aurora",
+                                  params.get("ratio") or "1:1", title=None, seed=f"seedart{i}")
+            out = {"title": nlp.title_case(nlp.topic_of(prompt)) + " — visual",
+                   "content": "![%s](%s)" % (prompt, img["url"]),
+                   "meta": {"image": img},
+                   "engine": {"model": "nebula-image-1", "credits": 8, "mode": "local-engine",
+                              "latency_ms": 1250 + i * 40, "words_out": 0,
+                              "temperature": 0.7, "seed": f"seedart{i}"}}
+        else:
+            out = engine.run(kind, params)
+            if kind in ("blog", "caption", "text") and i % 3 == 0:
+                img = images.generate(prompt, ["aurora", "editorial", "neon", "terracotta"][i % 4],
+                                      "16:9" if kind == "blog" else "1:1", title=None, seed=f"seedimg{i}")
         doc = {"id": new_id("doc"), "workspace_id": ws["id"], "user_id": user["id"], "kind": kind,
                "title": out["title"], "prompt": prompt, "status": "draft" if i % 5 == 0 else "ready",
                "content": out["content"], "meta": out["meta"], "engine": out["engine"],
                "params": params, "pinned": i in (0, 3), "tags": [kind, "seed"],
                "image": img, "created_at": created, "updated_at": created + 900,
-               "word_count": out["meta"].get("word_count") or len(out["content"].split())}
+               "word_count": 0 if kind == "image" else (out["meta"].get("word_count") or len(out["content"].split()))}
         DB.documents.insert(doc)
         DB.events.insert({"id": new_id("evt"), "user_id": user["id"], "workspace_id": ws["id"],
                           "feature": kind, "action": "generate", "credits": out["engine"]["credits"],
                           "words": out["engine"]["words_out"], "latency_ms": out["engine"]["latency_ms"],
                           "ts": created})
         user["credits_used"] = user.get("credits_used", 0) + out["engine"]["credits"]
-        if img:
+        if img and kind != "image":
             DB.events.insert({"id": new_id("evt"), "user_id": user["id"], "workspace_id": ws["id"],
                               "feature": "image", "action": "generate", "credits": 8, "words": 0,
                               "latency_ms": 1400 + i * 90, "ts": created + 60})
